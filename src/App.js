@@ -1,17 +1,21 @@
 import React from 'react';
-import { GoogleAuth } from './component/GoogleAuth';
+import Form from './component/Form';
+import Header from './component/Header';
 
 const App = () => {
     const styles = {
         display: 'flex',
-        height: '100vh',
+        height: '85vh',
         justifyContent: 'center',
         alignItems: 'center'
     }
    
     return (
-        <div style={styles}>
-            <GoogleAuth/>
+        <div>
+            <Header />
+            <div style={styles}>
+                <Form/>
+            </div>
         </div>
     )
 }

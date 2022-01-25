@@ -1,17 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
+import { connect } from 'react-redux';
 
-export const GoogleAuth = () => {
+import {signIn, signOut} from './../actions'
 
-    const [isSignedIn, setSignIn] = useState(null);
+const GoogleAuth = (props) => {
+
+    const {isSignedIn} = props.auth;
     const auth = useRef();
     const button = {
-        backgroundColor: 'aliceblue',
-        borderRadius:'3rem',
-        padding:'2rem',
-        boxShadow:'0 10px 10px blue',
-        fontSize: '3rem',
-        cursor: 'pointer'
+        backgroundColor: '#e50914',
+        lineHeight: 'normal',
+        padding: '7px 17px',
+        fontWeight: '400',
+        fontSize: '1rem',
+        float:'right'
     }
+    
 
     useEffect(() => {
         window.gapi.load('client:auth2', async () => {
@@ -19,20 +23,26 @@ export const GoogleAuth = () => {
                 client_id: process.env.REACT_APP_CLIENT_ID
             })
             auth.current = window.gapi.auth2.getAuthInstance();
-            setSignIn(auth.current.isSignedIn.get());
-            auth.current.isSignedIn.listen(()=>{
-                setSignIn(auth.current.isSignedIn.get())
-            })
+            handleAuth(auth.current.isSignedIn.get())
+            auth.current.isSignedIn.listen(handleAuth)
         });
 
     }, [])
 
-    const handleSignIn = () => {
-        auth.current.signIn();
+    const handleAuth = (isSignedIn)=>{
+        if(isSignedIn){
+            props.signIn()
+        }else{
+            props.signOut()
+        }
     }
-  
-    const handleSignOut= () => {
-        auth.current.signOut();
+
+    const handleSignIn = () => {
+        auth.current.signIn()
+    }
+
+    const handleSignOut = () => {
+        auth.current.signOut()
     }
 
     return (<>
@@ -40,3 +50,12 @@ export const GoogleAuth = () => {
             : <button style={button} onClick={handleSignIn}> Sign in with Google</button>}
     </>)
 }
+
+const mapStateToProps = (state) => {
+    return state;
+}
+
+export default connect(mapStateToProps,{
+    signOut,
+    signIn
+})(GoogleAuth)
